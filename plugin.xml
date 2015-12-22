@@ -4,7 +4,7 @@
   id="com.synconset.cordovaHTTP"
   version="0.1.4">
 
-    <name>SSL Pinning</name>
+    <name>HTTP Requests</name>
  
     <description>
         Cordova / Phonegap plugin for communicating with HTTP servers using SSL pinning
