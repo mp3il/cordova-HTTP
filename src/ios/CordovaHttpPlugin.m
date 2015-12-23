@@ -82,7 +82,13 @@
    manager.responseSerializer = [TextResponseSerializer serializer];
    [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
       NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
-      [dictionary setObject:operation.response.allHeaderFields forKey:@"headers"];
+       
+       // guy additions
+       [dictionary setObject:operation.response.allHeaderFields forKey:@"headers"];
+       [dictionary setObject:[[[operation response] URL] query] forKey:@"query"];
+       [dictionary setObject:[[[operation response] URL] absoluteString] forKey:@"url"];
+       
+
       [dictionary setObject:[NSNumber numberWithInt:operation.response.statusCode] forKey:@"status"];
       [dictionary setObject:responseObject forKey:@"data"];
       CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:dictionary];
@@ -108,11 +114,16 @@
    manager.responseSerializer = [TextResponseSerializer serializer];
    [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
       NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
-      [dictionary setObject:operation.response.allHeaderFields forKey:@"headers"];
-      [dictionary setObject:[NSNumber numberWithInt:operation.response.statusCode] forKey:@"status"];
-      [dictionary setObject:responseObject forKey:@"data"];
-      CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:dictionary];
-      [weakSelf.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+       
+       // guy additions
+       [dictionary setObject:operation.response.allHeaderFields forKey:@"headers"];
+       [dictionary setObject:[[[operation response] URL] query] forKey:@"query"];
+       [dictionary setObject:[[[operation response] URL] absoluteString] forKey:@"url"];
+       
+       [dictionary setObject:[NSNumber numberWithInt:operation.response.statusCode] forKey:@"status"];
+       [dictionary setObject:responseObject forKey:@"data"];
+       CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:dictionary];
+       [weakSelf.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
       NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
       [dictionary setObject:[NSNumber numberWithInt:operation.response.statusCode] forKey:@"status"];
