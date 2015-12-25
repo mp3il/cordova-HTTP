@@ -121,7 +121,7 @@ if (typeof angular !== "undefined") {
                 return makePromise(http.get, [url, params, headers], true);
             },
             put: function(url, params, headers, success, failure) {
-                return exec(success, failure, "CordovaHttpPlugin", "put", [url, params, headers]);
+                return makePromise(http.put, [url, params, headers], true);
             },             
             uploadFile: function(url, params, headers, filePath, name) {
                 return makePromise(http.uploadFile, [url, params, headers, filePath, name], true);
