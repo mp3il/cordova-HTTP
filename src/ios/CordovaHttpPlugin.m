@@ -155,7 +155,7 @@
     CordovaHttpPlugin* __weak weakSelf = self;
     
     manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    [manager PUT:url parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
         
         NSString *data_string = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
