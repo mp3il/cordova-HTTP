@@ -145,6 +145,42 @@
    }];
 }
 
+- (void)put:(CDVInvokedUrlCommand*)command {
+    HttpManager *manager = [HttpManager sharedClient];
+    NSString *url = [command.arguments objectAtIndex:0];
+    NSDictionary *parameters = [command.arguments objectAtIndex:1];
+    NSDictionary *headers = [command.arguments objectAtIndex:2];
+    [self setRequestHeaders: headers];
+    
+    CordovaHttpPlugin* __weak weakSelf = self;
+    
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
+        
+        NSString *data_string = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+        NSString *query = (operation.response.URL.query != nil) ? operation.response.URL.query : @"";
+        NSString *absoluteString = (operation.response.URL.absoluteString != nil) ? operation.response.URL.absoluteString : @"";
+        // guy additions
+        [dictionary setObject:operation.response.allHeaderFields forKey:@"headers"];
+        [dictionary setObject:query forKey:@"query"];
+        [dictionary setObject:absoluteString forKey:@"url"];
+        
+        
+        [dictionary setObject:[NSNumber numberWithInt:(int)operation.response.statusCode] forKey:@"status"];
+        [dictionary setObject:data_string forKey:@"data"];
+        
+        CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:dictionary];
+        [weakSelf.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
+        [dictionary setObject:[NSNumber numberWithInt:(int)operation.response.statusCode] forKey:@"status"];
+        [dictionary setObject:[error localizedDescription] forKey:@"error"];
+        CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:dictionary];
+        [weakSelf.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }];
+}
+
 - (void)uploadFile:(CDVInvokedUrlCommand*)command {
     HttpManager *manager = [HttpManager sharedClient];
     NSString *url = [command.arguments objectAtIndex:0];
