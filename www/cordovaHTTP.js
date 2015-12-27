@@ -7,6 +7,9 @@
 var exec = require('cordova/exec');
 
 var http = {
+    setRequestSerializer: function(serializer, success, failure) {
+        return exec(success, failure, "CordovaHttpPlugin", "setRequestSerializer", [serializer]);
+    },
     useBasicAuth: function(username, password, success, failure) {
         return exec(success, failure, "CordovaHttpPlugin", "useBasicAuth", [username, password]);
     },
@@ -102,6 +105,9 @@ if (typeof angular !== "undefined") {
         }
         
         var cordovaHTTP = {
+            setRequestSerializer: function(serializer) {
+                return makePromise(http.setRequestSerializer, [serializer]);
+            },
             useBasicAuth: function(username, password) {
                 return makePromise(http.useBasicAuth, [username, password]);
             },
