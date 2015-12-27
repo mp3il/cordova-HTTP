@@ -5,6 +5,7 @@
 
 @interface CordovaHttpPlugin : CDVPlugin
 
+- (void) setRequestSerializer:(CDVInvokedUrlCommand*)command;
 - (void)useBasicAuth:(CDVInvokedUrlCommand*)command;
 - (void)setHeader:(CDVInvokedUrlCommand*)command;
 - (void)enableSSLPinning:(CDVInvokedUrlCommand*)command;
