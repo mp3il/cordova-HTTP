@@ -18,8 +18,20 @@
     requestSerializer = [AFHTTPRequestSerializer serializer];
 }
 
+- (void) setRequestSerializer:(CDVInvokedUrlCommand*)command {
+    NSString *serializer = [[command.arguments objectAtIndex:0] uppercaseString];
+    if ([serializer isEqualToString:@"JSON"])
+        requestSerializer = [AFJSONRequestSerializer serializer];
+    
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    
+}
+
 - (void)setRequestHeaders:(NSDictionary*)headers {
-    [HttpManager sharedClient].requestSerializer = [AFHTTPRequestSerializer serializer];
+    
+    [HttpManager sharedClient].requestSerializer = requestSerializer;
+    
     [requestSerializer.HTTPRequestHeaders enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         [[HttpManager sharedClient].requestSerializer setValue:obj forHTTPHeaderField:key];
     }];
